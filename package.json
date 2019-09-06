@@ -1,8 +1,10 @@
 {
   "name": "treos-bootconfig",
   "version": "1.0.0",
-  "description": "",
-  "main": "index.js",
+  "description": "Create bootloader config files from treos-issue.json",
+  "bin": {
+    "treos-bootconfg-write": "bin/bin.js"
+  },
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
   },
@@ -10,11 +12,17 @@
     "type": "git",
     "url": "git+https://github.com/regular/treos-bootconfig.git"
   },
-  "keywords": [],
+  "keywords": [
+    "treos"
+  ],
   "author": "Jan Bölsche <jan@lagomorph.de> (https://regular.codes/)",
-  "license": "ISC",
+  "license": "AGPL-3.0-or-later",
   "bugs": {
     "url": "https://github.com/regular/treos-bootconfig/issues"
   },
-  "homepage": "https://github.com/regular/treos-bootconfig#readme"
+  "homepage": "https://github.com/regular/treos-bootconfig#readme",
+  "dependencies": {
+    "minimist": "^1.2.0",
+    "mkdirp": "^0.5.1"
+  }
 }
