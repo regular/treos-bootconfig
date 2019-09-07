@@ -1,6 +1,6 @@
 {
   "name": "treos-bootconfig",
-  "version": "1.1.0",
+  "version": "1.1.1",
   "description": "Create bootloader config files from treos-issue.json",
   "bin": {
     "treos-bootconfig-write": "bin/bin.js"
