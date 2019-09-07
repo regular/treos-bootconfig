@@ -16,17 +16,14 @@ const mkdirp = require('mkdirp')
 const argv = require('minimist')(process.argv.slice(2));
 
 const makeBootloaderConfigFiles = require('../systemd-boot.js')
+const parseVars = require('../parse-vars')
 
 if (argv._.length < 1) {
   console.error('Usage: treos-bootconfig TREOS-ISSUE.JSON [DESTDIR] [--boot-vars "KEY1=VALUE1 KEY2=VALUE2"')
   process.exit(1)
 }
 
-const rawBootVars = argv['boot-vars'] || fs.readFileSync('/proc/cmdline', 'utf8')
-const bootVars = {}
-rawBootVars.replace(/(\w+)=([\S]+)/g, (a,key,value)=>{
-  bootVars[key] = value
-})
+const bootVars = parseVars(argv['boot-vars'] || fs.readFileSync('/proc/cmdline', 'utf8'))
 console.error('Bootvars')
 console.error(bootVars)
 
@@ -38,7 +35,7 @@ try {
   issue = JSON.parse(fileContent)
 } catch(err) {
   console.error(err.message)
-  prcess.exit(1)
+  process.exit(1)
 }
 
 const files = makeBootloaderConfigFiles(issue.bootloader, bootVars)

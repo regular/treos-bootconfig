@@ -1,5 +1,5 @@
 function makeBootloaderConfig(bootloader, bootVars) {
-  const config = makeConfig(bootloader.config)
+  const config = makeConfig(bootloader.config, bootVars)
   const entries = Object.entries(bootloader.entries).map( ([filename, fields]) =>{
     const content = makeBootEntry(fields, bootVars)
     return {filename, content}
@@ -17,13 +17,18 @@ function makeBootloaderConfig(bootloader, bootVars) {
   })
 }
 
-function makeConfig(d) {
-  return Object.entries(d).map(p => {
-    if (!Array.isArray(p[1])) {
-      return p.join('\t')
+function makeConfig(d, bootVars) {
+  return Object.entries(d).map(([key, value]) => {
+    if (!Array.isArray(value)) {
+      value = expand(value, bootVars)
+      return `${key}\t${value}`
     }
-    return p[1].map(v=>`${p[0]}\t${v}`).join('\n')
+    return value.map(v=>`${key}\t${expand(v, bootVars)}`).join('\n')
   }).join('\n')
+}
+
+function expand(value,  bootVars) {
+  return value.replace(/\$\{([\w-_]+)\}/g, (_, key) => bootVars[key] || '')
 }
 
 function makeBootEntry(d, bootVars) {
@@ -33,11 +38,11 @@ function makeBootEntry(d, bootVars) {
 
   const opts = 'options\t' + Object.entries(options).map( ([key, value]) => {
     if (value==true) return key
-    value = value.replace(/\$\{(\w+)\}/g, (_, key) => bootVars[key] || '')
+    value = expand(value, bootVars)
     return `${key}=${value}`
   }).join(' ')
 
-  return [makeConfig(d), opts].join('\n')
+  return [makeConfig(d, bootVars), opts].join('\n')
 }
 
 module.exports = makeBootloaderConfig
